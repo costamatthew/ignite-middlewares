@@ -52,7 +52,7 @@ function checksTodoExists(request, response, next) {
     return response.status(400).json({ message: 'Id not validate'})
   }
 
-  const todo = user.todos.find((user) => user.id === id);
+  const todo = user.todos.find((todo) => todo.id === id);
 
   if (!todo) {
     return response.status(404).json({ message: 'Todo not exists'})
