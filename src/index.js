@@ -30,7 +30,7 @@ function checksCreateTodosUserAvailability(request, response, next) {
   const allTodos = todos.length >= 10
 
   if (!pro && allTodos) {
-    return response.status(403).json({ message: 'Not Able'})
+    return response.status(403).json({ message: 'Not Able' })
   }
 
   next()
@@ -39,27 +39,24 @@ function checksCreateTodosUserAvailability(request, response, next) {
 function checksTodoExists(request, response, next) {
   const { id } = request.params
   const { username } = request.headers
-  
-  const user = users.find((user) => user.username === username);
 
+  const user = users.find((user) => user.username === username);
   if (!user) {
     return response.status(404).json({ error: 'User not exists' });
   }
 
   const validateUuid = validate(id)
-
   if (!validateUuid) {
-    return response.status(400).json({ message: 'Id not validate'})
+    return response.status(400).json({ message: 'Id not validate' })
   }
 
   const todo = user.todos.find((todo) => todo.id === id);
-
   if (!todo) {
-    return response.status(404).json({ message: 'Todo not exists'})
+    return response.status(404).json({ message: 'Todo not exists' })
   }
 
   request.todo = todo
-  request.user = { name: user.name, username: user.username }
+  request.user = user
 
   next()
 }
@@ -70,7 +67,7 @@ function findUserById(request, response, next) {
   const user = users.find((user) => user.id === id)
 
   if (!user) {
-    return response.status(404).json({ message: 'User not found'})
+    return response.status(404).json({ message: 'User not found' })
   }
 
   request.user = user
@@ -163,10 +160,6 @@ app.delete('/todos/:id', checksExistsUserAccount, checksTodoExists, (request, re
   const { user, todo } = request;
 
   const todoIndex = user.todos.indexOf(todo);
-
-  if (todoIndex === -1) {
-    return response.status(404).json({ error: 'Todo not found' });
-  }
 
   user.todos.splice(todoIndex, 1);
 
